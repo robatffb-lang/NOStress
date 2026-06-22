@@ -10,7 +10,7 @@ const dictionary = {
         lblNewNote: "Nueva Nota", lblDraftTitle: "Borrador", lblEditTitle: "Editar Nota", lblSaveBtn: "Guardar", lblUpdateBtn: "Actualizar Nota",
         lblConfirmTitle: "¿Eliminar Nota?", lblConfirmDesc: "Esta acción es permanente y no se puede deshacer. ¿Estás seguro?",
         btnKeep: "Conservar", btnDelete: "Eliminar", placeholderTitle: "Dale un título...", placeholderNote: "Escribe tus pensamientos aquí...",
-        emptyState: "Tu espacio de trabajo está vacío.", noteUnit: "Nota", notesUnit: "Notas"
+        emptyState: "Tu espacio de trabalho está vacío.", noteUnit: "Nota", notesUnit: "Notas"
     },
     fr: {
         lblNewNote: "Nouvelle Note", lblDraftTitle: "Brouillon", lblEditTitle: "Modifier la Note", lblSaveBtn: "Enregistrer", lblUpdateBtn: "Mettre à jour",
@@ -28,7 +28,7 @@ const dictionary = {
         lblNewNote: "Nuova Nota", lblDraftTitle: "Bozza", lblEditTitle: "Modifica Nota", lblSaveBtn: "Salva", lblUpdateBtn: "Aggiorna Nota",
         lblConfirmTitle: "Eliminare la nota?", lblConfirmDesc: "Questa azione è permanente e sará impossibile annullarla. Sei sicuro?",
         btnKeep: "Mantieni", btnDelete: "Elimina", placeholderTitle: "Dai un titolo...", placeholderNote: "Scrivi i tuoi pensieri qui...",
-        emptyState: "Il tuo spazio di lavoro è vuoto.", noteUnit: "Nota", notesUnit: "Note"
+        emptyState: "Il tuo espaço di lavoro è vuoto.", noteUnit: "Nota", notesUnit: "Note"
     },
     pt: {
         lblNewNote: "Nova Nota", lblDraftTitle: "Rascunho", lblEditTitle: "Editar Nota", lblSaveBtn: "Salvar", lblUpdateBtn: "Atualizar Nota",
@@ -65,10 +65,12 @@ const dictionary = {
 let currentLang = localStorage.getItem('nostressLang') || 'en';
 let notes = JSON.parse(localStorage.getItem('nostressNotes')) || [];
 
+// Operational Pointer Targets
 let targetNoteIdToDelete = null; 
 let targetButtonElToDelete = null;
 let editingNoteId = null; 
 
+// Element Mapping Nodes
 const langSelect = document.getElementById('langSelect');
 const openComposeBtn = document.getElementById('openComposeBtn');
 const closeComposeBtn = document.getElementById('closeComposeBtn');
@@ -96,16 +98,18 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => document.getElementById('loadingScreen').classList.add('fade-out'), 1400);
 });
 
-// --- CROSS-DEVICE STAGGERED DOWNLOAD EXPORT SERVICE ---
+// --- CROSS-DEVICE DATA BACKUP ENGINE ---
 downloadBackupBtn.onclick = () => {
     if (notes.length === 0) return;
     
+    // Bundle local storage notes data array into JSON file scheme string structure
     const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(notes, null, 2))}`;
     const downloadAnchor = document.createElement('a');
     
     downloadAnchor.setAttribute("href", jsonString);
     downloadAnchor.setAttribute("download", `nostress-backup-${new Date().toISOString().slice(0,10)}.json`);
     
+    // Trigger virtual execution dispatch click to force local filesystem saving
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     document.body.removeChild(downloadAnchor);
@@ -116,6 +120,7 @@ langSelect.onchange = (e) => {
     currentLang = e.target.value;
     localStorage.setItem('nostressLang', currentLang);
 
+    // Identify current display zone to perform scaling layout transitions seamlessly
     const targetElementToAnimate = composeScreen.classList.contains('active') ? composeBox : dashboardContainer;
     targetElementToAnimate.classList.add('lang-changing-out');
 
@@ -123,6 +128,7 @@ langSelect.onchange = (e) => {
         applyTranslations();
         renderNotes();
         targetElementToAnimate.classList.remove('lang-changing-out');
+        
         if (composeScreen.classList.contains('active')) {
             const currentActiveField = document.activeElement === noteInput ? noteInput : titleInput;
             updateCaretPosition(currentActiveField);
@@ -250,6 +256,7 @@ titleInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); noteInput.focus(); }
 });
 
+// --- SAVE / UPDATE DATA DISPATCH PIPELINE ---
 saveBtn.onclick = () => {
     const title = titleInput.innerText.trim();
     const content = noteInput.innerText.trim();
@@ -279,6 +286,7 @@ saveBtn.onclick = () => {
     editingNoteId = null;
 };
 
+// --- INTENT-CHECK INTERCEPT DELETION PIPELINE ---
 function triggerDeleteRequest(id, event, buttonEl) {
     event.stopPropagation(); 
     targetNoteIdToDelete = id;
@@ -306,6 +314,7 @@ confirmDeleteBtn.onclick = () => {
     }, 250);
 };
 
+// --- COMPONENT MATRIX ASSEMBLY RENDERING ---
 function renderNotes() {
     const data = dictionary[currentLang];
     const unitLabel = notes.length === 1 ? data.noteUnit : data.notesUnit;
