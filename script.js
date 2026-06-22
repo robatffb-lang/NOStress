@@ -14,7 +14,7 @@ const dictionary = {
     },
     fr: {
         lblNewNote: "Nouvelle Note", lblDraftTitle: "Brouillon", lblEditTitle: "Modifier la Note", lblSaveBtn: "Enregistrer", lblUpdateBtn: "Mettre à jour",
-        lblConfirmTitle: "Supprimer la note?", lblConfirmDesc: "Cette action è permanente et ne peut pas être annulée. Êtes-vous sûr?",
+        lblConfirmTitle: "Supprimer la note?", lblConfirmDesc: "Cette action est permanente et ne peut pas être annulée. Êtes-vous sûr?",
         btnKeep: "Garder", btnDelete: "Supprimer", placeholderTitle: "Donnez un titre...", placeholderNote: "Rédigez vos pensées ici...",
         emptyState: "Votre espace de travail est vide.", noteUnit: "Note", notesUnit: "Notes"
     },
@@ -52,7 +52,7 @@ const dictionary = {
         lblNewNote: "ノートを作成", lblDraftTitle: "下書き", lblEditTitle: "ノートを編集", lblSaveBtn: "ボードに保存", lblUpdateBtn: "ノートを更新",
         lblConfirmTitle: "ノートを削除しますか？", lblConfirmDesc: "この操作は取り消せません。本当に削除してもよろしいですか？",
         btnKeep: "保持する", btnDelete: "削除する", placeholderTitle: "タイトルを入力...", placeholderNote: "ここに考えをドラフトする...",
-        emptyState: "ワークスペースには何もありません。", noteUnit: "個のノート", notesUnit: "個의 노트"
+        emptyState: "ワークスペースには何もありません。", noteUnit: "個のノート", notesUnit: "個のノート"
     },
     ko: {
         lblNewNote: "새 노트", lblDraftTitle: "노트 초안", lblEditTitle: "노트 수정", lblSaveBtn: "보드에 저장", lblUpdateBtn: "노트 업데이트",
@@ -65,12 +65,10 @@ const dictionary = {
 let currentLang = localStorage.getItem('nostressLang') || 'en';
 let notes = JSON.parse(localStorage.getItem('nostressNotes')) || [];
 
-// Operational Pointer Targets
 let targetNoteIdToDelete = null; 
 let targetButtonElToDelete = null;
 let editingNoteId = null; 
 
-// Element Mapping Nodes
 const langSelect = document.getElementById('langSelect');
 const openComposeBtn = document.getElementById('openComposeBtn');
 const closeComposeBtn = document.getElementById('closeComposeBtn');
@@ -85,6 +83,7 @@ const formGroup = document.getElementById('formGroup');
 const lblDraftTitle = document.getElementById('lblDraftTitle');
 const dashboardContainer = document.querySelector('.dashboard-container');
 const composeBox = document.querySelector('.compose-box');
+const downloadBackupBtn = document.getElementById('downloadBackupBtn');
 
 const confirmModal = document.getElementById('confirmModal');
 const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
@@ -97,31 +96,38 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => document.getElementById('loadingScreen').classList.add('fade-out'), 1400);
 });
 
-// --- NEW: STAGGERED LANG-SWITCHING ANIMATION ENGINE ---
+// --- CROSS-DEVICE STAGGERED DOWNLOAD EXPORT SERVICE ---
+downloadBackupBtn.onclick = () => {
+    if (notes.length === 0) return;
+    
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(notes, null, 2))}`;
+    const downloadAnchor = document.createElement('a');
+    
+    downloadAnchor.setAttribute("href", jsonString);
+    downloadAnchor.setAttribute("download", `nostress-backup-${new Date().toISOString().slice(0,10)}.json`);
+    
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    document.body.removeChild(downloadAnchor);
+};
+
+// --- STAGGERED LANG-SWITCHING ANIMATION ENGINE ---
 langSelect.onchange = (e) => {
     currentLang = e.target.value;
     localStorage.setItem('nostressLang', currentLang);
 
-    // Find which view container is actively displayed on the user's viewport
     const targetElementToAnimate = composeScreen.classList.contains('active') ? composeBox : dashboardContainer;
-
-    // Phase 1: Spin down, blur, and shrink the panel
     targetElementToAnimate.classList.add('lang-changing-out');
 
     setTimeout(() => {
-        // Phase 2: Swap the language text properties mid-way through the animation
         applyTranslations();
         renderNotes();
-
-        // Phase 3: Pop the window elements cleanly back into view
         targetElementToAnimate.classList.remove('lang-changing-out');
-        
-        // Re-align the fluid carets if editing text
         if (composeScreen.classList.contains('active')) {
             const currentActiveField = document.activeElement === noteInput ? noteInput : titleInput;
             updateCaretPosition(currentActiveField);
         }
-    }, 220); // Syncs with CSS transition speed curves
+    }, 220);
 };
 
 function applyTranslations() {
@@ -149,7 +155,6 @@ openComposeBtn.onclick = () => {
     editingNoteId = null; 
     lblDraftTitle.setAttribute('data-edit-mode', 'false');
     applyTranslations();
-    
     composeScreen.classList.add('active');
     setTimeout(() => titleInput.focus(), 150);
 };
@@ -162,7 +167,6 @@ closeComposeBtn.onclick = () => {
     editingNoteId = null;
 };
 
-// --- CLICK TO EDIT REVAMPED ROUTING ---
 function openEditWorkspace(id) {
     const targetNote = notes.find(n => n.id === id);
     if (!targetNote) return;
@@ -173,7 +177,6 @@ function openEditWorkspace(id) {
 
     titleInput.innerText = targetNote.title;
     noteInput.innerText = targetNote.content;
-
     composeScreen.classList.add('active');
     
     setTimeout(() => {
@@ -247,7 +250,6 @@ titleInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); noteInput.focus(); }
 });
 
-// --- SAVE / UPDATE DATA DISPATCH PIPELINE ---
 saveBtn.onclick = () => {
     const title = titleInput.innerText.trim();
     const content = noteInput.innerText.trim();
@@ -277,7 +279,6 @@ saveBtn.onclick = () => {
     editingNoteId = null;
 };
 
-// --- INTENT-CHECK INTERCEPT DELETION PIPELINE ---
 function triggerDeleteRequest(id, event, buttonEl) {
     event.stopPropagation(); 
     targetNoteIdToDelete = id;
@@ -305,7 +306,6 @@ confirmDeleteBtn.onclick = () => {
     }, 250);
 };
 
-// --- COMPONENT MATRIX ASSEMBLY RENDERING ---
 function renderNotes() {
     const data = dictionary[currentLang];
     const unitLabel = notes.length === 1 ? data.noteUnit : data.notesUnit;
