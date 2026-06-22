@@ -12,8 +12,14 @@
     --elastic-curve: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
 body { background-color: var(--bg); color: var(--text-primary); min-height: 100vh; padding: 40px 20px; position: relative; overflow-x: hidden; }
+
+/* --- BRAND LOGO DESIGN STRUCT --- */
+.app-logo { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5, #818cf8); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 24px var(--accent-glow); position: relative; border: 1px solid rgba(255, 255, 255, 0.2); }
+.app-logo.tiny { width: 32px; height: 32px; border-radius: 9px; box-shadow: 0 0 12px var(--accent-glow); }
+.app-logo span { color: #fff; font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; font-style: normal; }
+.app-logo.tiny span { font-size: 0.85rem; letter-spacing: -0.5px; }
 
 /* --- INTRODUCTORY LOADING OVERLAY --- */
 #loadingScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #040508; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.6s var(--smooth-curve), visibility 0.6s var(--smooth-curve); }
@@ -21,7 +27,6 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 .loader-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loader-brand { display: flex; align-items: center; gap: 14px; animation: pulseLoader 2s infinite ease-in-out; }
 .loader-brand h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, #fff, var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.loader-dot { width: 16px; height: 16px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 20px var(--accent); }
 .progress-bar { width: 200px; height: 3px; background: rgba(255, 255, 255, 0.04); border-radius: 10px; overflow: hidden; }
 .progress-fill { width: 0%; height: 100%; background: var(--accent); animation: fillProgress 1.4s var(--smooth-curve) forwards; }
 
@@ -31,18 +36,21 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 /* --- BACKGROUND BLURS & ENVIRONMENTAL HOVER SCALINGS --- */
 .background-glow { position: fixed; top: -15%; left: 30%; width: 700px; height: 700px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(0,0,0,0) 75%); z-index: -1; pointer-events: none; }
 .dashboard-container { max-width: 1200px; margin: 0 auto; transition: opacity 0.4s var(--smooth-curve), transform 0.4s var(--smooth-curve); }
-.main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--panel-border); padding-bottom: 24px; }
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand .dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-.header-actions { display: flex; align-items: center; gap: 16px; }
-.badge { background: rgba(255, 255, 255, 0.03); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary); border: 1px solid var(--panel-border); transition: transform 0.3s var(--elastic-curve), opacity 0.3s ease; }
+.main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--panel-border); padding-bottom: 24px; gap: 15px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.badge { background: rgba(255, 255, 255, 0.03); padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; color: var(--text-secondary); border: 1px solid var(--panel-border); white-space: nowrap; }
 
-.lang-dropdown { background: rgba(255, 255, 255, 0.03); color: var(--text-primary); border: 1px solid var(--panel-border); padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; transition: all 0.3s var(--smooth-curve); }
+/* Dedicated Control Action Buttons */
+.icon-action-btn { background: rgba(255, 255, 255, 0.03); color: var(--text-secondary); border: 1px solid var(--panel-border); width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s var(--smooth-curve); }
+.icon-action-btn:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.08); border-color: rgba(255,255,255,0.2); transform: translateY(-1px); }
+.icon-action-btn:active { transform: translateY(1px); }
+
+.lang-dropdown { background: rgba(255, 255, 255, 0.03); color: var(--text-primary); border: 1px solid var(--panel-border); padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; transition: all 0.3s var(--smooth-curve); }
 .lang-dropdown:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.15); }
-.lang-dropdown:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .lang-dropdown option { background: #11121a; color: var(--text-primary); }
 
-.fab-btn { background: var(--accent); color: white; border: none; padding: 12px 22px; border-radius: 14px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px var(--accent-glow); transition: all 0.3s var(--smooth-curve); }
+.fab-btn { background: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 14px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px var(--accent-glow); transition: all 0.3s var(--smooth-curve); }
 .fab-btn:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35); }
 .fab-btn:active { transform: translateY(1px) scale(0.98); }
 
@@ -51,7 +59,6 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 /* Dashboard Card UI Elements */
 .note-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 20px; padding: 26px; display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; cursor: pointer; position: relative; transition: all 0.4s var(--smooth-curve); transform-origin: center; animation: scaleIn 0.45s var(--smooth-curve) forwards; }
 .note-card:hover { transform: translateY(-4px) scale(1.01); background: rgba(24, 26, 42, 0.7); border-color: rgba(255, 255, 255, 0.12); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
-.note-card:active { transform: translateY(-1px) scale(0.99); }
 .note-card h4 { font-size: 1.15rem; margin-bottom: 12px; font-weight: 600; transition: color 0.2s; letter-spacing: -0.3px; }
 .note-card:hover h4 { color: #a5b4fc; }
 .note-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; margin-bottom: 24px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
@@ -61,7 +68,7 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 .delete-btn:hover { color: var(--danger); transform: scale(1.05); }
 
 /* --- FULLSCREEN DUAL-ACTION OVERLAY WORKSPACE --- */
-.fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 5, 8, 0.75); backdrop-filter: blur(24px); z-index: 100; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s var(--smooth-curve), visibility 0.4s var(--smooth-curve); }
+.fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 5, 8, 0.75); backdrop-filter: blur(24px); z-index: 100; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s var(--smooth-curve), visibility 0.4s var(--smooth-curve); padding: 16px; }
 .fullscreen-overlay.active { opacity: 1; visibility: visible; }
 .compose-box { width: 100%; max-width: 560px; transform: scale(0.9) translateY(30px); transition: transform 0.45s var(--elastic-curve), opacity 0.3s var(--smooth-curve), filter 0.3s var(--smooth-curve); }
 .fullscreen-overlay.active .compose-box { transform: scale(1) translateY(0); }
@@ -83,17 +90,11 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 
 #saveBtn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px var(--accent-glow); transition: all 0.2s; }
 #saveBtn:hover { background: #4f46e5; transform: translateY(-1px); }
-#saveBtn:active { transform: translateY(1px); }
 
-/* --- NEW: FLUID LANGUAGE TRANSITION CLASSROOM --- */
-.lang-changing-out {
-    opacity: 0.3 !important;
-    transform: scale(0.97) translateY(4px) !important;
-    filter: blur(4px) !important;
-}
+.lang-changing-out { opacity: 0.3 !important; transform: scale(0.97) translateY(4px) !important; filter: blur(4px) !important; }
 
 /* --- SAFETY SYSTEM MODAL DIALOGS --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 4, 6, 0.7); backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s var(--smooth-curve); }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 4, 6, 0.7); backdrop-filter: blur(10px); z-index: 200; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s var(--smooth-curve); padding: 16px; }
 .modal-overlay.active { opacity: 1; visibility: visible; }
 .modal-box { background: #12131c; border: 1px solid rgba(255,255,255,0.08); width: 100%; max-width: 390px; padding: 32px; border-radius: 24px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6); transform: scale(0.92); transition: transform 0.3s var(--elastic-curve); }
 .modal-overlay.active .modal-box { transform: scale(1); }
@@ -104,8 +105,19 @@ body { background-color: var(--bg); color: var(--text-primary); min-height: 100v
 .modal-btn.secondary { background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--panel-border); }
 .modal-btn.secondary:hover { background: rgba(255,255,255,0.08); }
 .modal-btn.danger { background: var(--danger); color: white; box-shadow: 0 4px 12px var(--danger-glow); }
-.modal-btn.danger:hover { background: #e11d48; transform: translateY(-1px); }
+.modal-btn.danger:hover { background: #e11d48; }
 
-/* --- KEYFRAME ANIMATION DISPATCHERS --- */
+/* --- RESPONSIVE MOBILE HANDSET LAYOUT CONFIGS --- */
+@media (max-width: 768px) {
+    body { padding: 20px 14px; }
+    .main-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+    .header-actions { width: 100%; justify-content: flex-end; gap: 8px; }
+    .lang-dropdown { padding: 8px; font-size: 0.8rem; max-width: 110px; }
+    .fab-btn #lblNewNote { display: none; } /* Compresses down into icon-only FAB layout on mobile screens */
+    .fab-btn { padding: 10px; border-radius: 12px; }
+    .notes-grid { grid-template-columns: 1fr; gap: 16px; }
+    .glass-panel { padding: 24px 18px; border-radius: 20px; }
+    #noteInput { min-height: 140px; max-height: 200px; }
+}
+
 @keyframes scaleIn { 0% { transform: scale(0.9) translateY(15px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-@keyframes scaleOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.85); opacity: 0; } }
