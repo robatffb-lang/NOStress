@@ -1,0 +1,15 @@
+{
+  "name": "NOStress Workspace",
+  "short_name": "NOStress",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#07080c",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=512&h=512&fit=crop",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
